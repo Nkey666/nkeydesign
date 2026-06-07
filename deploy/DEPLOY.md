@@ -17,9 +17,9 @@
 ssh root@СЕРВЕР_IP
 ```
 
-## 2. Swap 2 ГБ (страховка: на 2 ГБ RAM сборка Next может упасть по памяти)
+## 2. Swap 3 ГБ (страховка: на 1–2 ГБ RAM сборка Next может упасть по памяти)
 ```bash
-fallocate -l 2G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
+fallocate -l 3G /swapfile && chmod 600 /swapfile && mkswap /swapfile && swapon /swapfile
 echo '/swapfile none swap sw 0 0' >> /etc/fstab
 ```
 

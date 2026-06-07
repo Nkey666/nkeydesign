@@ -9,8 +9,8 @@ exec > /var/log/nkey-init.log 2>&1   # лог установки: tail -f /var/l
 REPO="https://github.com/Nkey666/nkeydesign.git"
 APP_DIR="/var/www/nkeydesign"
 
-# 1. Swap 2 ГБ — чтобы сборка Next не упала по памяти на 2 ГБ RAM
-fallocate -l 2G /swapfile
+# 1. Swap 3 ГБ — чтобы сборка Next не упала по памяти (особенно на 1 ГБ RAM)
+fallocate -l 3G /swapfile
 chmod 600 /swapfile
 mkswap /swapfile
 swapon /swapfile
