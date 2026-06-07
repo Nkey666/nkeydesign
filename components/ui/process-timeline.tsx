@@ -8,6 +8,8 @@ import {
   useInView,
   useMotionValue,
   useMotionValueEvent,
+  useReducedMotion,
+  useScroll,
   useTransform,
 } from "motion/react";
 import type { Step } from "@/lib/data/services";
@@ -18,14 +20,21 @@ export function ProcessTimeline({ steps }: { steps: Step[] }) {
   const [geo, setGeo] = useState<{
     w: number;
     xs: number[];
-    cy: number;
+    ys: number[];
     singleRow: boolean;
-  }>({ w: 0, xs: [], cy: 0, singleRow: false });
+  }>({ w: 0, xs: [], ys: [], singleRow: false });
 
+  const reduce = useReducedMotion();
   const progress = useMotionValue(0);
   const offsetDistance = useTransform(progress, [0, 1], ["0%", "100%"]);
   const [reached, setReached] = useState(0);
-  const inView = useInView(wrapRef, { once: true, amount: 0.5 });
+  const inView = useInView(wrapRef, { once: true, amount: 0.35 });
+
+  // Прокрутка секции — драйвер для вертикального (мобильного) луча.
+  const { scrollYProgress } = useScroll({
+    target: wrapRef,
+    offset: ["start 0.85", "end 0.55"],
+  });
 
   useLayoutEffect(() => {
     const measure = () => {
@@ -39,7 +48,7 @@ export function ProcessTimeline({ steps }: { steps: Step[] }) {
         n ? n.getBoundingClientRect().top - wr.top + n.getBoundingClientRect().height / 2 : 0,
       );
       const singleRow = ys.length > 0 && Math.max(...ys) - Math.min(...ys) < 12;
-      setGeo({ w: wr.width, xs, cy: ys[0] ?? 0, singleRow });
+      setGeo({ w: wr.width, xs, ys, singleRow });
     };
     measure();
     const ro = new ResizeObserver(measure);
@@ -61,37 +70,63 @@ export function ProcessTimeline({ steps }: { steps: Step[] }) {
     setReached(r);
   });
 
-  const { w, xs, cy, singleRow } = geo;
-  const ready = w > 0 && xs.length === steps.length && cy > 0 && singleRow;
+  const { w, xs, ys, singleRow } = geo;
+  const ready =
+    w > 0 && xs.length === steps.length && ys.length === steps.length && Math.max(...ys) > 0;
+
+  const cy = ys[0] ?? 0;
   const peak = Math.max(cy - 48, 6);
-  const svgH = cy + 16;
+  const maxY = ys.length ? Math.max(...ys) : 0;
+  const svgH = (singleRow ? cy : maxY) + 16;
 
   let arc = "";
   if (ready) {
-    arc = `M ${xs[0]} ${cy}`;
-    for (let i = 1; i < xs.length; i++) {
-      const mid = (xs[i - 1] + xs[i]) / 2;
-      arc += ` Q ${mid} ${peak} ${xs[i]} ${cy}`;
+    if (singleRow) {
+      // Десктоп — пологая дуга через точки.
+      arc = `M ${xs[0]} ${cy}`;
+      for (let i = 1; i < xs.length; i++) {
+        const mid = (xs[i - 1] + xs[i]) / 2;
+        arc += ` Q ${mid} ${peak} ${xs[i]} ${cy}`;
+      }
+    } else {
+      // Мобайл — вертикальная линия через центры точек.
+      arc = `M ${xs[0]} ${ys[0]}`;
+      for (let i = 1; i < xs.length; i++) {
+        arc += ` L ${xs[i]} ${ys[i]}`;
+      }
     }
   }
 
-  // Разовый запуск при попадании в экран.
+  // Десктоп: разовый прогон по времени при попадании в экран.
   useEffect(() => {
-    if (!inView || !ready) return;
+    if (reduce || !singleRow || !inView || !ready) return;
     const controls = animate(progress, 1, {
       duration: 2.4,
       ease: [0.45, 0, 0.15, 1],
     });
     return () => controls.stop();
-  }, [inView, ready, progress]);
+  }, [reduce, singleRow, inView, ready, progress]);
+
+  // Мобайл: прогресс луча привязан к скроллу секции.
+  useMotionValueEvent(scrollYProgress, "change", (v) => {
+    if (reduce || singleRow || !ready) return;
+    progress.set(v < 0 ? 0 : v > 1 ? 1 : v);
+  });
+
+  // Reduced-motion / до измерения геометрии — показываем точки заполненными.
+  useEffect(() => {
+    if (reduce) setReached(steps.length);
+  }, [reduce, steps.length]);
+
+  const showBeam = ready && !reduce;
 
   return (
-    <MotionConfig reducedMotion="never">
+    <MotionConfig reducedMotion="user">
       <div
         ref={wrapRef}
         className="relative left-1/2 w-[94vw] max-w-[1480px] -translate-x-1/2 px-2 pt-16"
       >
-        {ready && (
+        {showBeam && (
           <>
             <svg
               aria-hidden
@@ -110,7 +145,7 @@ export function ProcessTimeline({ steps }: { steps: Step[] }) {
                   <feGaussianBlur stdDeviation="2.4" />
                 </filter>
               </defs>
-              {/* след, который рисуется за лучом */}
+              {/* мягкий след под линией */}
               <motion.path
                 d={arc}
                 fill="none"
@@ -158,6 +193,7 @@ export function ProcessTimeline({ steps }: { steps: Step[] }) {
                 key={step.k}
                 className="relative flex flex-col items-center text-center lg:w-[15rem] lg:shrink-0"
               >
+                {/* Точка не трансформируется — её позицию замеряет луч. */}
                 <span
                   ref={(el) => {
                     nodeRefs.current[i] = el;
@@ -172,12 +208,26 @@ export function ProcessTimeline({ steps }: { steps: Step[] }) {
                     className="absolute inset-[2px] rounded-full bg-brand shadow-[0_0_12px_oklch(0.6_0.17_252/0.8)]"
                   />
                 </span>
-                <p className="mt-4 font-display text-xl font-medium text-fg">
-                  {step.title}
-                </p>
-                <p className="mt-2 max-w-[15rem] text-sm leading-relaxed text-muted">
-                  {step.blurb}
-                </p>
+                {/* Текст — лёгкий вход со стаггером, не влияет на замер точки. */}
+                {/* initial одинаков на сервере и клиенте — без hydration mismatch.
+                    При reduced-motion motion мгновенно ставит конечное состояние. */}
+                <motion.div
+                  initial={{ opacity: 0, y: 16 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.6 }}
+                  transition={{
+                    duration: 0.55,
+                    delay: i * 0.08,
+                    ease: [0.22, 1, 0.36, 1],
+                  }}
+                >
+                  <p className="mt-4 font-display text-xl font-medium text-fg">
+                    {step.title}
+                  </p>
+                  <p className="mt-2 max-w-[15rem] text-sm leading-relaxed text-muted">
+                    {step.blurb}
+                  </p>
+                </motion.div>
               </li>
             );
           })}
