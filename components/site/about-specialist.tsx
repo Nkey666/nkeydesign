@@ -1,4 +1,5 @@
 import { SpotlightCard } from "@/components/ui/spotlight-card";
+import { Reveal } from "@/components/ui/reveal";
 
 export function AboutSpecialist() {
   return (
@@ -6,6 +7,7 @@ export function AboutSpecialist() {
       id="about"
       className="relative mx-auto max-w-3xl scroll-mt-24 px-6 pb-12"
     >
+      <Reveal amount={0.3}>
       <SpotlightCard className="rounded-3xl border border-border bg-surface/60 p-8 text-center backdrop-blur-sm md:p-12">
         <p className="text-sm font-semibold text-brand">Обо мне</p>
         <h2 className="mt-4 font-display text-2xl font-bold tracking-tight text-fg md:text-3xl">
@@ -30,6 +32,7 @@ export function AboutSpecialist() {
           </p>
         </div>
       </SpotlightCard>
+      </Reveal>
     </section>
   );
 }

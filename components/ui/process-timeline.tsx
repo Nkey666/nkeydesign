@@ -8,12 +8,14 @@ import {
   useInView,
   useMotionValue,
   useMotionValueEvent,
-  useReducedMotion,
   useScroll,
   useSpring,
   useTransform,
 } from "motion/react";
 import type { Step } from "@/lib/data/services";
+
+// Motion всегда включён (требование владельца — см. globals.css), поэтому
+// reducedMotion="never" и никакого useReducedMotion-гейтинга.
 
 const FILL_GRADIENT =
   "linear-gradient(180deg, oklch(0.62 0.16 256), oklch(0.7 0.15 240))";
@@ -25,11 +27,9 @@ const BEAM_SHADOW =
 /** Точка этапа: ядро заполняется, при достижении — разовый пульс-кольцо. */
 function StepDot({
   filled,
-  reduce,
   refCb,
 }: {
   filled: boolean;
-  reduce: boolean | null;
   refCb?: (el: HTMLSpanElement | null) => void;
 }) {
   return (
@@ -44,7 +44,7 @@ function StepDot({
         transition={{ duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
         className="absolute inset-[2px] rounded-full bg-brand shadow-[0_0_12px_oklch(0.6_0.17_252/0.8)]"
       />
-      {!reduce && filled && (
+      {filled && (
         <motion.span
           aria-hidden
           initial={{ scale: 0.5, opacity: 0.55 }}
@@ -67,7 +67,6 @@ function DesktopTimeline({ steps }: { steps: Step[] }) {
     cy: 0,
   });
 
-  const reduce = useReducedMotion();
   const progress = useMotionValue(0);
   const offsetDistance = useTransform(progress, [0, 1], ["0%", "100%"]);
   const [reached, setReached] = useState(0);
@@ -119,24 +118,18 @@ function DesktopTimeline({ steps }: { steps: Step[] }) {
   }
 
   useEffect(() => {
-    if (reduce) {
-      setReached(steps.length);
-      return;
-    }
     if (!inView || !ready) return;
     const controls = animate(progress, 1, { duration: 2.4, ease: [0.45, 0, 0.15, 1] });
     return () => controls.stop();
-  }, [reduce, inView, ready, progress, steps.length]);
-
-  const showBeam = ready && !reduce;
+  }, [inView, ready, progress]);
 
   return (
-    <MotionConfig reducedMotion="user">
+    <MotionConfig reducedMotion="never">
       <div
         ref={wrapRef}
         className="relative left-1/2 w-[94vw] max-w-[1480px] -translate-x-1/2 px-2 pt-16"
       >
-        {showBeam && (
+        {ready && (
           <>
             <svg
               aria-hidden
@@ -198,7 +191,6 @@ function DesktopTimeline({ steps }: { steps: Step[] }) {
               <li key={step.k} className="flex w-[15rem] shrink-0 flex-col items-center text-center">
                 <StepDot
                   filled={filled}
-                  reduce={reduce}
                   refCb={(el) => {
                     nodeRefs.current[i] = el;
                   }}
@@ -228,7 +220,6 @@ function MobileTimeline({ steps }: { steps: Step[] }) {
   const geomRef = useRef({ x: 0, top: 0, h: 0 });
   const [rail, setRail] = useState({ x: 0, top: 0, h: 0 });
 
-  const reduce = useReducedMotion();
   const { scrollYProgress } = useScroll({
     target: wrapRef,
     offset: ["start 0.85", "end 0.55"],
@@ -279,14 +270,10 @@ function MobileTimeline({ steps }: { steps: Step[] }) {
     setReached(r);
   });
 
-  useEffect(() => {
-    if (reduce) setReached(steps.length);
-  }, [reduce, steps.length]);
-
-  const ready = rail.h > 0 && !reduce;
+  const ready = rail.h > 0;
 
   return (
-    <MotionConfig reducedMotion="user">
+    <MotionConfig reducedMotion="never">
       <motion.div
         ref={wrapRef}
         initial={{ opacity: 0 }}
@@ -296,7 +283,7 @@ function MobileTimeline({ steps }: { steps: Step[] }) {
         className="relative mx-auto max-w-md px-2 pt-6"
       >
         {/* фоновая рельса */}
-        {rail.h > 0 && (
+        {ready && (
           <div
             aria-hidden
             className="absolute w-[2px] rounded-full bg-border"
@@ -329,13 +316,12 @@ function MobileTimeline({ steps }: { steps: Step[] }) {
                 <div className="flex flex-col items-center pt-1">
                   <StepDot
                     filled={filled}
-                    reduce={reduce}
                     refCb={(el) => {
                       dotRefs.current[i] = el;
                     }}
                   />
                 </div>
-                <motion.div
+                <div
                   className="flex-1 transition-transform duration-500"
                   style={{ transform: active ? "scale(1.015)" : "scale(1)", transformOrigin: "left center" }}
                 >
@@ -346,7 +332,7 @@ function MobileTimeline({ steps }: { steps: Step[] }) {
                     {step.title}
                   </p>
                   <p className="mt-1.5 text-sm leading-relaxed text-muted">{step.blurb}</p>
-                </motion.div>
+                </div>
               </li>
             );
           })}
