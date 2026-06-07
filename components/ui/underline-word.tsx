@@ -20,7 +20,7 @@ export function UnderlineWord({
         {children}
         <motion.span
           aria-hidden
-          className="pointer-events-none absolute inset-x-0 bottom-[-0.32em] h-[0.07em] origin-left rounded-full bg-brand/55"
+          className="pointer-events-none absolute inset-x-0 bottom-[-0.32em] h-[0.07em] origin-left rounded-full bg-brand/55 lg:hidden"
           initial={{ scaleX: 0 }}
           whileInView={{ scaleX: 1 }}
           viewport={{ once: true, amount: 0.8 }}
