@@ -1,5 +1,6 @@
 import { CasesGrid } from "@/components/ui/cases-grid";
 import { Reveal } from "@/components/ui/reveal";
+import { UnderlineWord } from "@/components/ui/underline-word";
 import { cases, categories } from "@/lib/data/works";
 
 export function Works() {
@@ -10,7 +11,7 @@ export function Works() {
           <h2 className="font-display text-4xl font-extrabold leading-[1.05] tracking-tight text-fg md:text-6xl">
             Сайты, которые
             <br />
-            <span className="text-brand">работают</span> на бизнес
+            <UnderlineWord className="text-brand">работают</UnderlineWord> на бизнес
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-pretty text-base leading-relaxed text-muted sm:text-lg">
             Несколько кейсов под разные ниши. Нажмите на проект — покажу, что это

@@ -175,16 +175,16 @@ function ChatPlace({
     <motion.div
       variants={item}
       className={
-        "rounded-2xl border p-4 transition-colors " +
+        "rounded-2xl border p-3 transition-colors sm:p-4 " +
         (highlighted
           ? "border-brand/35 bg-brand/[0.04] shadow-[0_18px_40px_-30px_oklch(0.48_0.16_256/0.5)]"
           : "border-border bg-bg")
       }
     >
-      <div className="flex items-center gap-2">
+      <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
         <span
           className={
-            "inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.08em] " +
+            "inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.08em] " +
             (badgeTone === "brand"
               ? "bg-brand text-white"
               : "bg-surface text-muted")
@@ -193,9 +193,8 @@ function ChatPlace({
           {badgeTone === "brand" && <Star className="size-3" fill="currentColor" />}
           {badge}
         </span>
-        <span className="text-[12px] text-faint">·</span>
         <span className="inline-flex items-center gap-1 text-[12px] text-faint">
-          <MapPin className="size-3" />
+          <MapPin className="size-3 shrink-0" />
           {meta}
         </span>
       </div>
@@ -223,7 +222,7 @@ export function AiMockup() {
       variants={stagger}
       initial="hidden"
       animate="show"
-      className="rounded-2xl border border-border bg-gradient-to-b from-brand/[0.04] to-bg p-5 md:p-7"
+      className="rounded-2xl border border-border bg-gradient-to-b from-brand/[0.04] to-bg p-3 sm:p-5 md:p-7"
     >
       {/* ChatGPT-окно */}
       <motion.div
@@ -246,7 +245,7 @@ export function AiMockup() {
         </div>
 
         {/* Тело чата */}
-        <div className="space-y-5 px-5 py-5 md:px-7 md:py-6">
+        <div className="space-y-5 px-3 py-4 sm:px-5 sm:py-5 md:px-7 md:py-6">
           {/* Сообщение пользователя */}
           <div className="flex justify-end">
             <span className="max-w-[85%] rounded-[20px_20px_6px_20px] bg-fg px-4 py-2.5 text-[14.5px] font-medium text-bg">
@@ -255,9 +254,9 @@ export function AiMockup() {
           </div>
 
           {/* Ответ ChatGPT */}
-          <div className="flex gap-3.5">
-            <span className="inline-flex size-9 shrink-0 items-center justify-center rounded-full bg-fg text-bg">
-              <ChatGptMark className="size-5" />
+          <div className="flex gap-2.5 sm:gap-3.5">
+            <span className="inline-flex size-7 shrink-0 items-center justify-center rounded-full bg-fg text-bg sm:size-9">
+              <ChatGptMark className="size-4 sm:size-5" />
             </span>
             <div className="min-w-0 flex-1">
               <p className="text-[14.5px] leading-[1.62] text-fg">

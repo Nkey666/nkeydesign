@@ -8,8 +8,6 @@ import {
   useInView,
   useMotionValue,
   useMotionValueEvent,
-  useScroll,
-  useSpring,
   useTransform,
 } from "motion/react";
 import type { Step } from "@/lib/data/services";
@@ -220,16 +218,9 @@ function MobileTimeline({ steps }: { steps: Step[] }) {
   const geomRef = useRef({ x: 0, top: 0, h: 0 });
   const [rail, setRail] = useState({ x: 0, top: 0, h: 0 });
 
-  const { scrollYProgress } = useScroll({
-    target: wrapRef,
-    offset: ["start 0.85", "end 0.55"],
-  });
-  // Пружина = плавность: луч не дёргается за скроллом, а мягко догоняет.
-  const smooth = useSpring(scrollYProgress, {
-    stiffness: 70,
-    damping: 24,
-    restDelta: 0.0005,
-  });
+  // Разовый проезд вниз при попадании в экран — луч НЕ следует за скроллом.
+  const progress = useMotionValue(0);
+  const inView = useInView(wrapRef, { once: true, amount: 0.3 });
   const [reached, setReached] = useState(0);
 
   useLayoutEffect(() => {
@@ -260,10 +251,10 @@ function MobileTimeline({ steps }: { steps: Step[] }) {
   }, [steps.length]);
 
   const clamp = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
-  const fillH = useTransform(smooth, (v) => geomRef.current.h * clamp(v));
-  const headTop = useTransform(smooth, (v) => geomRef.current.top + geomRef.current.h * clamp(v));
+  const fillH = useTransform(progress, (v) => geomRef.current.h * clamp(v));
+  const headTop = useTransform(progress, (v) => geomRef.current.top + geomRef.current.h * clamp(v));
 
-  useMotionValueEvent(smooth, "change", (v) => {
+  useMotionValueEvent(progress, "change", (v) => {
     const n = steps.length;
     let r = 0;
     for (let i = 0; i < n; i++) if (v >= i / (n - 1) - 0.001) r = i + 1;
@@ -271,6 +262,13 @@ function MobileTimeline({ steps }: { steps: Step[] }) {
   });
 
   const ready = rail.h > 0;
+
+  // Луч едет вниз один раз, когда секция появилась.
+  useEffect(() => {
+    if (!inView || !ready) return;
+    const controls = animate(progress, 1, { duration: 2.1, ease: [0.45, 0, 0.15, 1] });
+    return () => controls.stop();
+  }, [inView, ready, progress]);
 
   return (
     <MotionConfig reducedMotion="never">

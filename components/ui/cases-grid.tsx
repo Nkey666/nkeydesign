@@ -236,7 +236,7 @@ export function CasesGrid({
                   </motion.div>
                 </div>
 
-                <div className="space-y-6 border-t border-border bg-surface/40 px-7 py-8 md:px-11 md:py-10">
+                <div className="space-y-6 border-t border-border bg-surface/40 px-4 py-6 sm:px-7 sm:py-8 md:px-11 md:py-10">
                   {active.mockup ? (
                     <motion.div variants={modalItem}>
                       {active.mockup === "seo" ? <SeoMockup /> : <AiMockup />}
