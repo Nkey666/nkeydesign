@@ -7,8 +7,8 @@ import { services } from "@/lib/data/services";
 /** Боевой домен. Поменять тут — обновится везде. */
 export const SITE_URL = "https://nkeydesign.ru";
 
-export const SITE_NAME = "Никита — разработка сайтов";
-export const SITE_TITLE = "Никита — фронтенд-разработчик современных сайтов";
+export const SITE_NAME = "nkeydesign";
+export const SITE_TITLE = "Разработка сайтов для бизнеса — nkeydesign";
 export const SITE_DESCRIPTION =
   "Делаю быстрые, адаптивные и визуально продуманные сайты для бизнеса: лендинги, интернет-магазины, корпоративные сайты, редизайн, SEO и оптимизация под ИИ. От идеи до запуска.";
 

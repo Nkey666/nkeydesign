@@ -129,7 +129,7 @@ export const cases: Case[] = [
     description:
       "Кофейня как место, а не точка с кофе. Меню, атмосфера зала и бронь стола — сайт, в который хочется зайти так же, как в саму кофейню.",
     tech: ["HTML", "CSS", "JavaScript"],
-    shots: [page("cafe", "full", 1350, 6491)],
+    shots: [page("cafe", "full-2", 1350, 6491)],
   },
   {
     title: "BLOOM — кофейня",
