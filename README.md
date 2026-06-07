@@ -1,36 +1,45 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# nkeydesign
 
-## Getting Started
+Сайт-портфолио разработчика: современные сайты для бизнеса — лендинги, интернет-магазины, корпоративные сайты, редизайн, SEO и оптимизация под ИИ-поисковики.
 
-First, run the development server:
+**Живой сайт:** https://nkeydesign.ru
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+## Стек
+
+- Next.js 16 (App Router, React Server Components)
+- React 19, TypeScript
+- Tailwind CSS v4 (CSS-first, токены OKLCH)
+- Motion, Lenis — анимации и плавный скролл
+- SEO/GEO: JSON-LD (`@graph`), llms.txt, динамические OG-изображения
+
+## Структура
+
+```
+app/            маршруты, метаданные, robots, sitemap, OG-изображения
+components/site/ секции страницы (Hero, Services, Works, FAQ, ...)
+components/ui/   переиспользуемые примитивы
+lib/seo.ts       единый источник SEO-конфигурации и структурированных данных
+lib/data/        типизированные данные (услуги, кейсы, FAQ)
+deploy/          конфигурация и runbook для деплоя на VPS
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Локальный запуск
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+npm install
+npm run dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Открыть http://localhost:3000
 
-## Learn More
+## Сборка
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run build
+npm start
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Деплой
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Полный runbook для VPS (Node + pm2 + nginx + SSL) — в [`deploy/DEPLOY.md`](deploy/DEPLOY.md).
+Автоматическая настройка при создании сервера — [`deploy/cloud-init.sh`](deploy/cloud-init.sh).

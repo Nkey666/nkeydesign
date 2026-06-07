@@ -39,3 +39,9 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# внутренние / мета файлы — не публиковать
+.claude/
+CLAUDE.md
+AGENTS.md
+GEO-AUDIT-REPORT.md
