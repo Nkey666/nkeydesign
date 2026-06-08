@@ -87,24 +87,38 @@ export function AiTile() {
         <span className="inline-flex size-6 shrink-0 items-center justify-center rounded-full bg-fg text-bg">
           <ChatGptMark className="size-3.5" />
         </span>
-        <div className="min-w-0 flex-1 rounded-xl border border-border bg-bg p-2.5 sm:p-3">
-          <span className="inline-flex items-center gap-1 rounded-full bg-brand px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.06em] text-white">
-            <Star className="size-2" fill="currentColor" strokeWidth={0} />
-            Лучший выбор
-          </span>
-          <p className="mt-1.5 text-[11px] font-bold leading-tight text-brand-strong sm:text-[12px]">
-            Вербена — цветочный бутик
-          </p>
-          <div className="mt-1.5 space-y-1.5">
+        <div className="flex min-w-0 flex-1 flex-col gap-2">
+          {/* текст ответа */}
+          <div className="space-y-1.5">
             <span className={`${skel} h-1.5 w-full`} />
-            <span className={`${skel} h-1.5 w-3/4`} />
+            <span className={`${skel} h-1.5 w-5/6`} />
           </div>
-          <span className="mt-2 inline-flex items-center gap-1 rounded-full border border-border bg-bg px-1.5 py-0.5 text-[9px] font-semibold text-fg">
-            <span className="inline-flex size-3 items-center justify-center rounded-[3px] bg-brand text-[7px] font-extrabold text-white">
-              В
+
+          {/* рекомендация №1 */}
+          <div className="rounded-xl border border-brand/30 bg-brand/[0.04] p-2.5 sm:p-3">
+            <span className="inline-flex items-center gap-1 rounded-full bg-brand px-1.5 py-0.5 text-[8px] font-bold uppercase tracking-[0.06em] text-white">
+              <Star className="size-2" fill="currentColor" strokeWidth={0} />
+              Лучший выбор
             </span>
-            verbena-flowers.ru
-          </span>
+            <p className="mt-1.5 text-[11px] font-bold leading-tight text-brand-strong sm:text-[12px]">
+              Вербена — цветочный бутик
+            </p>
+            <span className="mt-1.5 inline-flex items-center gap-1 rounded-full border border-border bg-bg px-1.5 py-0.5 text-[9px] font-semibold text-fg">
+              <span className="inline-flex size-3 items-center justify-center rounded-[3px] bg-brand text-[7px] font-extrabold text-white">
+                В
+              </span>
+              verbena-flowers.ru
+            </span>
+          </div>
+
+          {/* вариант №2 — приглушён */}
+          <div className="rounded-xl border border-border bg-bg p-2.5 opacity-55 sm:p-3">
+            <p className="text-[11px] font-semibold text-fg">Цветочная База №1</p>
+            <div className="mt-1.5 space-y-1.5">
+              <span className={`${skel} h-1.5 w-full`} />
+              <span className={`${skel} h-1.5 w-2/3`} />
+            </div>
+          </div>
         </div>
       </div>
     </div>
