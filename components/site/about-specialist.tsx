@@ -39,19 +39,6 @@ export function AboutSpecialist() {
             <span className="font-semibold text-brand-strong">реальную пользу бизнесу</span>.
           </p>
         </div>
-
-        <div className="mt-7 flex flex-wrap justify-center gap-2">
-          {["3 года опыта", "Next.js", "React", "TypeScript", "SEO и ИИ-поиск"].map(
-            (t) => (
-              <span
-                key={t}
-                className="rounded-full border border-border bg-bg/60 px-3 py-1 text-xs font-medium text-muted"
-              >
-                {t}
-              </span>
-            ),
-          )}
-        </div>
       </SpotlightCard>
       </Reveal>
     </section>
