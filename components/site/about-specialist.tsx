@@ -26,15 +26,19 @@ export function AboutSpecialist() {
             бизнесу привлекать клиентов.
           </p>
           <p>
-            Работаю на современном стеке: Next.js, React, TypeScript, Tailwind
-            CSS, анимации на Motion и GSAP. Особое внимание — производительности,
-            качеству кода и деталям реализации.
+            Работаю на{" "}
+            <span className="font-semibold text-brand-strong">современном</span>{" "}
+            стеке: Next.js, React, TypeScript, Tailwind CSS, анимации на Motion и
+            GSAP. Особое внимание — производительности, качеству кода и{" "}
+            <span className="font-semibold text-brand-strong">деталям</span>{" "}
+            реализации.
           </p>
           <p>
             Готовлю проекты под{" "}
             <span className="font-semibold text-brand-strong">ИИ-поиск</span>,
             чтобы клиенты приходили не только из Яндекса и Google, но и из
-            нейросетей вроде ChatGPT. Моя цель — продукты, которые приносят
+            нейросетей вроде ChatGPT. Моя цель — продукты, которые{" "}
+            <span className="font-semibold text-brand-strong">приносят</span>{" "}
             реальную пользу бизнесу.
           </p>
         </div>
