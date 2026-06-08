@@ -72,11 +72,10 @@ export const metadata: Metadata = {
       "max-video-preview": -1,
     },
   },
-  // Подтверждение прав в вебмастерах. Вставь коды после регистрации:
-  // Яндекс.Вебмастер -> verification.other.yandex; Google Search Console -> verification.google
+  // Подтверждение прав в вебмастерах.
+  // Google — мета-тег ниже; Яндекс — HTML-файл public/yandex_cf5d8e7c5464f577.html.
   verification: {
-    // google: "ВСТАВЬ_КОД_GOOGLE",
-    // other: { yandex: "ВСТАВЬ_КОД_ЯНДЕКС" },
+    google: "sun2UErO9rlJYwmctHZp4ToJG8vQqFQn3OUqbedb-Io",
   },
 };
 
