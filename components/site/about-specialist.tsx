@@ -15,14 +15,15 @@ export function AboutSpecialist() {
         </h2>
         <div className="mx-auto mt-4 max-w-2xl space-y-4 text-[15px] leading-relaxed text-fg">
           <p>
-            Фронтенд-разработчик из Москвы.{" "}
-            <span className="font-semibold text-brand-strong">Три года</span> делаю
-            современные сайты, веб-приложения и корпоративные порталы —{" "}
             <span className="font-semibold text-brand-strong">
-              быстрые, удобные и надёжные
+              Фронтенд-разработчик
             </span>{" "}
-            интерфейсы, которые помогают бизнесу{" "}
-            <span className="font-semibold text-brand-strong">привлекать клиентов</span>.
+            из Москвы. Три года делаю{" "}
+            <span className="font-semibold text-brand-strong">современные</span>{" "}
+            сайты, веб-приложения и корпоративные порталы — быстрые, удобные и
+            надёжные интерфейсы, которые{" "}
+            <span className="font-semibold text-brand-strong">помогают</span>{" "}
+            бизнесу привлекать клиентов.
           </p>
           <p>
             Работаю на современном стеке: Next.js, React, TypeScript, Tailwind
@@ -30,13 +31,11 @@ export function AboutSpecialist() {
             качеству кода и деталям реализации.
           </p>
           <p>
-            Готовлю проекты под ИИ-поиск, чтобы клиенты приходили не только из
-            Яндекса и Google, но и{" "}
-            <span className="font-semibold text-brand-strong">
-              из нейросетей вроде ChatGPT
-            </span>
-            . Моя цель — продукты, которые приносят{" "}
-            <span className="font-semibold text-brand-strong">реальную пользу бизнесу</span>.
+            Готовлю проекты под{" "}
+            <span className="font-semibold text-brand-strong">ИИ-поиск</span>,
+            чтобы клиенты приходили не только из Яндекса и Google, но и из
+            нейросетей вроде ChatGPT. Моя цель — продукты, которые приносят
+            реальную пользу бизнесу.
           </p>
         </div>
       </SpotlightCard>
