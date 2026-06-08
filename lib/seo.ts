@@ -66,7 +66,7 @@ export function buildJsonLd() {
         name: "Никита",
         jobTitle: "Frontend-разработчик",
         description:
-          "Frontend-разработчик из Москвы. Делаю современные сайты для бизнеса: лендинги, интернет-магазины, корпоративные сайты, редизайн, SEO и оптимизацию под ИИ.",
+          "Frontend-разработчик из Москвы, 3 года опыта. Делаю современные сайты для бизнеса: лендинги, интернет-магазины, корпоративные сайты, редизайн, SEO и оптимизацию под ИИ. Стек: Next.js, React, TypeScript, Tailwind CSS.",
         url: SITE_URL,
         knowsAbout: KNOWS_ABOUT,
         knowsLanguage: ["ru"],
