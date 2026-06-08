@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import type { Case, Category } from "@/lib/data/works";
 import { SeoMockup, AiMockup } from "./case-mockups";
+import { SeoTile, AiTile } from "./case-tiles";
 import { CASE_MOCKUPS } from "@/components/site/case-mockup";
 
 const EASE = [0.22, 1, 0.36, 1] as const;
@@ -66,14 +67,20 @@ function Tile({ c, i, onOpen }: { c: Case; i: number; onOpen: () => void }) {
         className="group block w-full text-left focus-visible:outline-none"
       >
         <div className="relative aspect-[16/10] overflow-hidden rounded-2xl border border-border bg-surface shadow-[0_18px_50px_-30px_oklch(0.3_0.01_265/0.5)] transition-all duration-500 ease-smooth group-hover:-translate-y-1.5 group-hover:border-brand/40 group-hover:shadow-[0_32px_66px_-34px_oklch(0.42_0.1_260/0.55)] group-focus-visible:ring-2 group-focus-visible:ring-brand group-focus-visible:ring-offset-2">
-          <Image
-            src={c.thumbnail}
-            alt={c.title}
-            fill
-            quality={90}
-            sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 24vw"
-            className="object-cover object-top transition-transform duration-[900ms] ease-smooth group-hover:scale-[1.05]"
-          />
+          {c.mockup === "seo" ? (
+            <SeoTile />
+          ) : c.mockup === "ai" ? (
+            <AiTile />
+          ) : (
+            <Image
+              src={c.thumbnail}
+              alt={c.title}
+              fill
+              quality={90}
+              sizes="(max-width: 640px) 92vw, (max-width: 1024px) 46vw, 24vw"
+              className="object-cover object-top transition-transform duration-[900ms] ease-smooth group-hover:scale-[1.05]"
+            />
+          )}
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[oklch(0.22_0.03_260/0.5)] via-transparent to-transparent opacity-0 transition-opacity duration-500 ease-smooth group-hover:opacity-100" />
           <span className="pointer-events-none absolute bottom-3 left-3 inline-flex translate-y-2 items-center gap-1 rounded-full bg-white/90 px-3 py-1 text-xs font-semibold text-fg opacity-0 backdrop-blur-sm transition-all duration-500 ease-smooth group-hover:translate-y-0 group-hover:opacity-100">
             Открыть

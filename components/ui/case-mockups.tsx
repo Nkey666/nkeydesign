@@ -145,7 +145,7 @@ export function SeoMockup() {
 }
 
 // Лого OpenAI (официальный path) — «цветок-узел».
-function ChatGptMark({ className = "" }: { className?: string }) {
+export function ChatGptMark({ className = "" }: { className?: string }) {
   return (
     <svg viewBox="0 0 24 24" className={className} aria-hidden>
       <path

@@ -1,6 +1,7 @@
 import { CasesGrid } from "@/components/ui/cases-grid";
 import { Reveal } from "@/components/ui/reveal";
 import { UnderlineWord } from "@/components/ui/underline-word";
+import { PressWord } from "@/components/ui/press-word";
 import { cases, categories } from "@/lib/data/works";
 
 export function Works() {
@@ -14,8 +15,8 @@ export function Works() {
             <UnderlineWord className="text-brand">работают</UnderlineWord> на бизнес
           </h2>
           <p className="mx-auto mt-5 max-w-2xl text-pretty text-base leading-relaxed text-muted sm:text-lg">
-            Несколько кейсов под разные ниши. Нажмите на проект — покажу, что это
-            за сайт, какие технологии и как он выглядит.
+            Несколько кейсов под разные ниши. <PressWord>Нажмите</PressWord> на
+            проект — покажу, что это за сайт, какие технологии и как он выглядит.
           </p>
         </Reveal>
 
