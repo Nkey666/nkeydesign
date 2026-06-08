@@ -40,7 +40,9 @@ export function Footer() {
         </nav>
       </div>
 
-      <p className="mt-8 text-sm text-faint">© {new Date().getFullYear()} Никита</p>
+      <p className="mt-8 text-sm text-faint">
+        © {new Date().getFullYear()} Краснослободцев Никита Александрович
+      </p>
     </footer>
   );
 }
