@@ -3,16 +3,21 @@
 import { motion } from "motion/react";
 import type { ReactNode } from "react";
 
-// Слово-«клавиша»: лёгкий подъём на hover и тактильное вдавливание при нажатии.
+// Слово-хинт: само «нажимается» (короткое вдавливание) примерно раз в 5 секунд,
+// чтобы мягко подсказать, что по кейсам можно кликать. Без громкой плашки.
 export function PressWord({ children }: { children: ReactNode }) {
   return (
     <motion.span
-      role="button"
-      tabIndex={0}
-      whileHover={{ y: -1 }}
-      whileTap={{ scale: 0.9, y: 1 }}
-      transition={{ type: "spring", stiffness: 600, damping: 18 }}
-      className="mx-0.5 inline-flex cursor-pointer select-none items-center rounded-md bg-brand/10 px-1.5 py-0.5 font-semibold text-brand-strong shadow-[inset_0_-2px_0_oklch(0.48_0.16_256/0.18)] transition-colors duration-300 hover:bg-brand/15 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand"
+      className="inline-block font-semibold text-brand-strong"
+      animate={{ scale: [1, 0.88, 1], y: [0, 1.5, 0] }}
+      transition={{
+        duration: 0.36,
+        times: [0, 0.4, 1],
+        ease: "easeOut",
+        repeat: Infinity,
+        repeatDelay: 5,
+      }}
+      whileTap={{ scale: 0.88, y: 1.5 }}
     >
       {children}
     </motion.span>
