@@ -13,16 +13,16 @@ export function AboutSpecialist() {
         <h2 className="mt-4 font-display text-2xl font-bold tracking-tight text-fg md:text-3xl">
           Меня зовут Никита
         </h2>
-        <div className="mx-auto mt-4 max-w-2xl space-y-4 text-[15px] leading-relaxed text-muted">
+        <div className="mx-auto mt-4 max-w-2xl space-y-4 text-[15px] leading-relaxed text-fg">
           <p>
             Фронтенд-разработчик из Москвы.{" "}
-            <span className="font-medium text-fg">Три года</span> делаю
+            <span className="font-semibold text-brand-strong">Три года</span> делаю
             современные сайты, веб-приложения и корпоративные порталы —{" "}
-            <span className="font-medium text-fg">
+            <span className="font-semibold text-brand-strong">
               быстрые, удобные и надёжные
             </span>{" "}
             интерфейсы, которые помогают бизнесу{" "}
-            <span className="font-medium text-fg">привлекать клиентов</span>.
+            <span className="font-semibold text-brand-strong">привлекать клиентов</span>.
           </p>
           <p>
             Работаю на современном стеке: Next.js, React, TypeScript, Tailwind
@@ -32,11 +32,11 @@ export function AboutSpecialist() {
           <p>
             Готовлю проекты под ИИ-поиск, чтобы клиенты приходили не только из
             Яндекса и Google, но и{" "}
-            <span className="font-medium text-fg">
+            <span className="font-semibold text-brand-strong">
               из нейросетей вроде ChatGPT
             </span>
             . Моя цель — продукты, которые приносят{" "}
-            <span className="font-medium text-fg">реальную пользу бизнесу</span>.
+            <span className="font-semibold text-brand-strong">реальную пользу бизнесу</span>.
           </p>
         </div>
 
