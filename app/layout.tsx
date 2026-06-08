@@ -6,6 +6,7 @@ import { AuroraBackground } from "@/components/ui/aurora-background";
 import { ContactButton } from "@/components/site/contact-button";
 import { SiteHeader } from "@/components/site/site-header";
 import { CookieConsent } from "@/components/site/cookie-consent";
+import { YandexMetrika } from "@/components/site/yandex-metrika";
 import { SITE_URL, SITE_TITLE, SITE_DESCRIPTION, SITE_NAME } from "@/lib/seo";
 
 const manrope = Manrope({
@@ -100,6 +101,7 @@ export default function RootLayout({
         <LenisProvider>{children}</LenisProvider>
         <ContactButton />
         <CookieConsent />
+        <YandexMetrika />
       </body>
     </html>
   );
