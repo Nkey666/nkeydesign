@@ -1,8 +1,15 @@
 "use client";
 
 import { motion } from "motion/react";
+import { Mail } from "lucide-react";
 import { TelegramIcon } from "@/components/ui/telegram-icon";
-import { TELEGRAM_LINK as TELEGRAM } from "@/lib/contact";
+import { WhatsappIcon } from "@/components/ui/whatsapp-icon";
+import {
+  TELEGRAM_LINK as TELEGRAM,
+  WHATSAPP_LINK,
+  EMAIL_LINK,
+  EMAIL,
+} from "@/lib/contact";
 
 export function FinalCta() {
   return (
@@ -43,6 +50,26 @@ export function FinalCta() {
           >
             <TelegramIcon className="size-5 transition-transform duration-500 ease-smooth group-hover:translate-x-1 group-hover:-translate-y-1" />
             Доделать мой сайт
+          </a>
+        </div>
+
+        <div className="mt-7 flex flex-col items-center gap-x-6 gap-y-3 text-sm text-muted sm:flex-row">
+          <span className="text-faint">Или так:</span>
+          <a
+            href={WHATSAPP_LINK}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="group inline-flex items-center gap-2 font-medium text-fg transition-colors duration-300 ease-smooth hover:text-brand-strong focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+          >
+            <WhatsappIcon className="size-4 transition-transform duration-300 ease-smooth group-hover:-translate-y-0.5" />
+            WhatsApp
+          </a>
+          <a
+            href={EMAIL_LINK}
+            className="group inline-flex items-center gap-2 font-medium text-fg transition-colors duration-300 ease-smooth hover:text-brand-strong focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+          >
+            <Mail className="size-4 transition-transform duration-300 ease-smooth group-hover:-translate-y-0.5" aria-hidden />
+            {EMAIL}
           </a>
         </div>
       </motion.div>

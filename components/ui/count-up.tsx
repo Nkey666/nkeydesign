@@ -1,8 +1,7 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { animate, useInView } from "motion/react";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { animate, useInView, useReducedMotion } from "motion/react";
 
 export function CountUp({
   to,
@@ -15,17 +14,22 @@ export function CountUp({
 }) {
   const ref = useRef<HTMLSpanElement>(null);
   const inView = useInView(ref, { once: true, amount: 0.6 });
-  const [value, setValue] = useState(0);
+  const reduced = useReducedMotion();
+  // Стартуем сразу с финального значения: серверный HTML и краулеры без JS
+  // видят «116», а не «0». Анимация ниже — только прогрессивное улучшение.
+  const [value, setValue] = useState(to);
+  const started = useRef(false);
 
   useEffect(() => {
-    if (!inView) return;
+    if (!inView || reduced || started.current) return;
+    started.current = true;
     const controls = animate(0, to, {
       duration,
       ease: [0.22, 1, 0.36, 1],
       onUpdate: (v) => setValue(Math.round(v)),
     });
     return () => controls.stop();
-  }, [inView, to, duration]);
+  }, [inView, reduced, to, duration]);
 
   return (
     <span ref={ref} className={className}>

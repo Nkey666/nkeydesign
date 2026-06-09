@@ -1,7 +1,15 @@
 import Link from "next/link";
-import { Clock } from "lucide-react";
+import { Clock, Mail } from "lucide-react";
 import { CookieSettingsLink } from "./cookie-settings-link";
-import { TELEGRAM_LINK } from "@/lib/contact";
+import { TelegramIcon } from "@/components/ui/telegram-icon";
+import { WhatsappIcon } from "@/components/ui/whatsapp-icon";
+import {
+  TELEGRAM_LINK,
+  WHATSAPP_LINK,
+  WHATSAPP_DISPLAY,
+  EMAIL_LINK,
+  EMAIL,
+} from "@/lib/contact";
 
 export function Footer() {
   return (
@@ -12,14 +20,33 @@ export function Footer() {
           <p className="max-w-xs text-sm leading-relaxed text-muted">
             Фронтенд- и бэкэнд-разработчик современных сайтов для бизнеса
           </p>
-          <a
-            href={TELEGRAM_LINK}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="font-mono text-sm text-fg transition-colors duration-300 ease-smooth hover:text-brand-strong"
-          >
-            Telegram @nkey6
-          </a>
+          <div className="flex flex-col gap-2">
+            <a
+              href={TELEGRAM_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 font-mono text-sm text-fg transition-colors duration-300 ease-smooth hover:text-brand-strong"
+            >
+              <TelegramIcon className="size-4 text-brand transition-transform duration-300 ease-smooth group-hover:-translate-y-0.5" />
+              Telegram @nkey6
+            </a>
+            <a
+              href={WHATSAPP_LINK}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group inline-flex items-center gap-2 font-mono text-sm text-fg transition-colors duration-300 ease-smooth hover:text-brand-strong"
+            >
+              <WhatsappIcon className="size-4 text-brand transition-transform duration-300 ease-smooth group-hover:-translate-y-0.5" />
+              WhatsApp {WHATSAPP_DISPLAY}
+            </a>
+            <a
+              href={EMAIL_LINK}
+              className="group inline-flex items-center gap-2 font-mono text-sm text-fg transition-colors duration-300 ease-smooth hover:text-brand-strong"
+            >
+              <Mail className="size-4 text-brand transition-transform duration-300 ease-smooth group-hover:-translate-y-0.5" aria-hidden />
+              {EMAIL}
+            </a>
+          </div>
           <p className="flex items-center gap-1.5 text-xs text-faint">
             <Clock className="size-3.5" aria-hidden />
             Москва (UTC+3) · отвечаю в рабочее время
