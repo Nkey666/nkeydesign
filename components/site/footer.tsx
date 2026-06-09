@@ -1,15 +1,10 @@
 import Link from "next/link";
-import { Clock, Mail } from "lucide-react";
+import { Clock } from "lucide-react";
 import { CookieSettingsLink } from "./cookie-settings-link";
 import { TelegramIcon } from "@/components/ui/telegram-icon";
 import { WhatsappIcon } from "@/components/ui/whatsapp-icon";
-import {
-  TELEGRAM_LINK,
-  WHATSAPP_LINK,
-  WHATSAPP_DISPLAY,
-  EMAIL_LINK,
-  EMAIL,
-} from "@/lib/contact";
+import { CopyEmail } from "@/components/ui/copy-email";
+import { TELEGRAM_LINK, WHATSAPP_LINK, WHATSAPP_DISPLAY } from "@/lib/contact";
 
 export function Footer() {
   return (
@@ -39,13 +34,7 @@ export function Footer() {
               <WhatsappIcon className="size-4 text-brand transition-transform duration-300 ease-smooth group-hover:-translate-y-0.5" />
               WhatsApp {WHATSAPP_DISPLAY}
             </a>
-            <a
-              href={EMAIL_LINK}
-              className="group inline-flex items-center gap-2 font-mono text-sm text-fg transition-colors duration-300 ease-smooth hover:text-brand-strong"
-            >
-              <Mail className="size-4 text-brand transition-transform duration-300 ease-smooth group-hover:-translate-y-0.5" aria-hidden />
-              {EMAIL}
-            </a>
+            <CopyEmail className="font-mono text-sm text-fg" iconClassName="text-brand" />
           </div>
           <p className="flex items-center gap-1.5 text-xs text-faint">
             <Clock className="size-3.5" aria-hidden />

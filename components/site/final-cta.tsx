@@ -1,15 +1,10 @@
 "use client";
 
 import { motion } from "motion/react";
-import { Mail } from "lucide-react";
 import { TelegramIcon } from "@/components/ui/telegram-icon";
 import { WhatsappIcon } from "@/components/ui/whatsapp-icon";
-import {
-  TELEGRAM_LINK as TELEGRAM,
-  WHATSAPP_LINK,
-  EMAIL_LINK,
-  EMAIL,
-} from "@/lib/contact";
+import { CopyEmail } from "@/components/ui/copy-email";
+import { TELEGRAM_LINK as TELEGRAM, WHATSAPP_LINK } from "@/lib/contact";
 
 export function FinalCta() {
   return (
@@ -64,13 +59,7 @@ export function FinalCta() {
             <WhatsappIcon className="size-4 transition-transform duration-300 ease-smooth group-hover:-translate-y-0.5" />
             WhatsApp
           </a>
-          <a
-            href={EMAIL_LINK}
-            className="group inline-flex items-center gap-2 font-medium text-fg transition-colors duration-300 ease-smooth hover:text-brand-strong focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
-          >
-            <Mail className="size-4 transition-transform duration-300 ease-smooth group-hover:-translate-y-0.5" aria-hidden />
-            {EMAIL}
-          </a>
+          <CopyEmail className="font-medium text-fg" />
         </div>
       </motion.div>
     </section>
