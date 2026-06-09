@@ -1,13 +1,14 @@
 "use client";
 
 import { useRef, useState } from "react";
-import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Mail, Check } from "lucide-react";
 import { EMAIL } from "@/lib/contact";
 import { cn } from "@/lib/utils";
-import { EASE_OUT } from "@/lib/motion";
 
-// Клик по почте копирует её в буфер и показывает рядом плашку «Скопировано».
+// Клик по почте копирует её в буфер. Подтверждение — прямо в самой кнопке:
+// иконка письма сменяется галочкой, а адрес на секунду превращается в
+// «Скопировано». Без всплывающих плашек, чтобы не выглядело шаблонно.
+// Свопы — на CSS-переходах opacity/scale: два состояния, motion тут лишний.
 export function CopyEmail({
   className,
   iconClassName,
@@ -16,7 +17,6 @@ export function CopyEmail({
   iconClassName?: string;
 }) {
   const [copied, setCopied] = useState(false);
-  const reduced = useReducedMotion();
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const copy = async () => {
@@ -48,34 +48,50 @@ export function CopyEmail({
       onClick={copy}
       aria-label={`Скопировать почту ${EMAIL}`}
       className={cn(
-        "group relative inline-flex cursor-pointer items-center gap-2 transition-colors duration-300 ease-smooth hover:text-brand-strong focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
+        "group inline-flex cursor-pointer items-center gap-2 transition-colors duration-300 ease-smooth hover:text-brand-strong focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2",
+        copied && "text-brand-strong",
         className,
       )}
     >
-      <Mail
-        className={cn(
-          "size-4 transition-transform duration-300 ease-smooth group-hover:-translate-y-0.5",
-          iconClassName,
-        )}
-        aria-hidden
-      />
-      {EMAIL}
+      {/* Иконка: письмо → галочка (оба наложены, переключаются по opacity). */}
+      <span className="relative inline-flex size-4 items-center justify-center">
+        <Mail
+          aria-hidden
+          className={cn(
+            "absolute size-4 transition-all duration-200 ease-smooth group-hover:-translate-y-0.5",
+            copied ? "scale-50 opacity-0" : "scale-100 opacity-100",
+            iconClassName,
+          )}
+        />
+        <Check
+          aria-hidden
+          className={cn(
+            "absolute size-4 text-brand-strong transition-all duration-200 ease-smooth",
+            copied ? "scale-100 opacity-100" : "scale-50 opacity-0",
+          )}
+        />
+      </span>
 
-      <AnimatePresence>
-        {copied && (
-          <motion.span
-            role="status"
-            initial={{ opacity: 0, y: reduced ? 0 : 6, scale: reduced ? 1 : 0.9 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: reduced ? 0 : -4, scale: reduced ? 1 : 0.9 }}
-            transition={{ duration: 0.24, ease: EASE_OUT }}
-            className="pointer-events-none absolute -top-8 left-1/2 inline-flex -translate-x-1/2 items-center gap-1 whitespace-nowrap rounded-full border border-brand/25 bg-brand/[0.08] px-2.5 py-1 text-xs font-medium text-brand-strong shadow-[0_8px_24px_-12px_oklch(0.27_0.006_265/0.5)] backdrop-blur-sm"
-          >
-            <Check className="size-3 text-brand" aria-hidden />
-            Скопировано
-          </motion.span>
-        )}
-      </AnimatePresence>
+      {/* Адрес → «Скопировано». Невидимый адрес держит ширину, чтобы при
+          смене текста кнопка не дёргалась. */}
+      <span className="relative inline-block">
+        <span
+          aria-hidden={copied}
+          className={cn("transition-opacity duration-200 ease-smooth", copied && "opacity-0")}
+        >
+          {EMAIL}
+        </span>
+        <span
+          role="status"
+          aria-hidden={!copied}
+          className={cn(
+            "absolute inset-y-0 left-0 inline-flex items-center font-semibold text-brand-strong transition-opacity duration-200 ease-smooth",
+            copied ? "opacity-100" : "opacity-0",
+          )}
+        >
+          {copied ? "Скопировано" : ""}
+        </span>
+      </span>
     </button>
   );
 }
