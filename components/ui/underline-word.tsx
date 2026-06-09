@@ -2,6 +2,7 @@
 
 import { motion, MotionConfig } from "motion/react";
 import type { ReactNode } from "react";
+import { EASE_OUT_EXPO } from "@/lib/motion";
 
 // Слово с подчёркиванием, которое прочерчивается слева направо при появлении.
 // Линия вынесена ниже хвостов букв (descender «р»), чтобы не задевать глифы.
@@ -24,7 +25,7 @@ export function UnderlineWord({
           initial={{ scaleX: 0 }}
           whileInView={{ scaleX: 1 }}
           viewport={{ once: true, amount: 0.8 }}
-          transition={{ duration: 0.7, delay, ease: [0.16, 1, 0.3, 1] }}
+          transition={{ duration: 0.7, delay, ease: EASE_OUT_EXPO }}
         />
       </span>
     </MotionConfig>

@@ -2,12 +2,12 @@
 
 import { motion } from "motion/react";
 import { Search, Sparkles, Star, AlignLeft, Zap, LayoutGrid, ArrowUp, Database, FileText, Code2, Compass, MapPin, ArrowUpRight, Mic, Plus, Settings2 } from "lucide-react";
-
-const EASE = [0.22, 1, 0.36, 1] as const;
+import { cn } from "@/lib/utils";
+import { EASE_OUT } from "@/lib/motion";
 
 const item = {
   hidden: { opacity: 0, y: 14 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: EASE_OUT } },
 };
 const stagger = {
   hidden: {},
@@ -174,21 +174,19 @@ function ChatPlace({
   return (
     <motion.div
       variants={item}
-      className={
-        "rounded-2xl border p-3 transition-colors sm:p-4 " +
-        (highlighted
+      className={cn(
+        "rounded-2xl border p-3 transition-colors sm:p-4",
+        highlighted
           ? "border-brand/35 bg-brand/[0.04] shadow-[0_18px_40px_-30px_oklch(0.48_0.16_256/0.5)]"
-          : "border-border bg-bg")
-      }
+          : "border-border bg-bg",
+      )}
     >
       <div className="flex flex-wrap items-center gap-x-2 gap-y-1">
         <span
-          className={
-            "inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.08em] " +
-            (badgeTone === "brand"
-              ? "bg-brand text-white"
-              : "bg-surface text-muted")
-          }
+          className={cn(
+            "inline-flex shrink-0 items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-bold uppercase tracking-[0.08em]",
+            badgeTone === "brand" ? "bg-brand text-white" : "bg-surface text-muted",
+          )}
         >
           {badgeTone === "brand" && <Star className="size-3" fill="currentColor" />}
           {badge}
@@ -200,10 +198,10 @@ function ChatPlace({
       </div>
       <div className="mt-2 flex items-start justify-between gap-3">
         <p
-          className={
-            "text-[15px] font-bold " +
-            (highlighted ? "text-brand-strong" : "text-fg")
-          }
+          className={cn(
+            "text-[15px] font-bold",
+            highlighted ? "text-brand-strong" : "text-fg",
+          )}
         >
           {title}
         </p>

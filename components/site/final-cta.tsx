@@ -5,6 +5,7 @@ import { TelegramIcon } from "@/components/ui/telegram-icon";
 import { WhatsappIcon } from "@/components/ui/whatsapp-icon";
 import { CopyEmail } from "@/components/ui/copy-email";
 import { TELEGRAM_LINK as TELEGRAM, WHATSAPP_LINK } from "@/lib/contact";
+import { EASE_OUT } from "@/lib/motion";
 
 export function FinalCta() {
   return (
@@ -16,7 +17,7 @@ export function FinalCta() {
         initial={{ opacity: 0, y: 24 }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount: 0.5 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.7, ease: EASE_OUT }}
         className="flex flex-col items-center"
       >
         <h2 className="font-display text-4xl font-bold tracking-tight text-fg md:text-6xl">

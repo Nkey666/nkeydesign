@@ -4,8 +4,7 @@ import { motion, MotionConfig } from "motion/react";
 import { ArrowUpRight } from "lucide-react";
 import { services, steps } from "@/lib/data/services";
 import { ProcessTimeline } from "@/components/ui/process-timeline";
-
-const EASE = [0.22, 1, 0.36, 1] as const;
+import { EASE_OUT } from "@/lib/motion";
 
 export function Services() {
   return (
@@ -32,7 +31,7 @@ export function Services() {
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.6 }}
-                transition={{ duration: 0.6, delay: i * 0.06, ease: EASE }}
+                transition={{ duration: 0.6, delay: i * 0.06, ease: EASE_OUT }}
                 className="group border-t border-border py-7 transition-colors duration-500 ease-smooth first:border-t-0 first:pt-0 hover:border-brand/40 sm:py-8"
               >
                 <a

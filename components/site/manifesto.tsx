@@ -1,6 +1,7 @@
 "use client";
 
 import { motion } from "motion/react";
+import { EASE_OUT } from "@/lib/motion";
 
 const reveal = {
   hidden: { opacity: 0, y: 24 },
@@ -28,7 +29,7 @@ export function Manifesto() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, amount: 0.5 }}
-        transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.7, ease: EASE_OUT }}
         className="font-display text-3xl leading-[1.22] font-semibold text-fg text-balance sm:text-4xl md:text-5xl"
       >
         Разрабатываю современные сайты для большого и малого бизнеса — тем, кто
@@ -41,7 +42,7 @@ export function Manifesto() {
         initial="hidden"
         whileInView="show"
         viewport={{ once: true, amount: 0.6 }}
-        transition={{ duration: 0.7, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.7, delay: 0.1, ease: EASE_OUT }}
         className="mt-8 max-w-2xl text-base leading-relaxed text-muted sm:text-lg"
       >
         От идеи до запуска: быстрые, адаптивные и визуально продуманные решения,

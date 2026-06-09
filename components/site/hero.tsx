@@ -7,11 +7,12 @@ import { PhotoMarquee } from "@/components/ui/photo-marquee";
 import { CountUp } from "@/components/ui/count-up";
 import { heroImages } from "@/lib/data/works";
 import { TELEGRAM_LINK as TELEGRAM } from "@/lib/contact";
+import { EASE_OUT } from "@/lib/motion";
 
 const fade = (delay: number) => ({
   initial: { opacity: 0, y: 14 },
   animate: { opacity: 1, y: 0 },
-  transition: { duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] as const },
+  transition: { duration: 0.6, delay, ease: EASE_OUT },
 });
 
 export function Hero() {

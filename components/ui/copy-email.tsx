@@ -5,8 +5,7 @@ import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 import { Mail, Check } from "lucide-react";
 import { EMAIL } from "@/lib/contact";
 import { cn } from "@/lib/utils";
-
-const EASE = [0.22, 1, 0.36, 1] as const;
+import { EASE_OUT } from "@/lib/motion";
 
 // Клик по почте копирует её в буфер и показывает рядом плашку «Скопировано».
 export function CopyEmail({
@@ -69,7 +68,7 @@ export function CopyEmail({
             initial={{ opacity: 0, y: reduced ? 0 : 6, scale: reduced ? 1 : 0.9 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: reduced ? 0 : -4, scale: reduced ? 1 : 0.9 }}
-            transition={{ duration: 0.24, ease: EASE }}
+            transition={{ duration: 0.24, ease: EASE_OUT }}
             className="pointer-events-none absolute -top-8 left-1/2 inline-flex -translate-x-1/2 items-center gap-1 whitespace-nowrap rounded-full border border-brand/25 bg-brand/[0.08] px-2.5 py-1 text-xs font-medium text-brand-strong shadow-[0_8px_24px_-12px_oklch(0.27_0.006_265/0.5)] backdrop-blur-sm"
           >
             <Check className="size-3 text-brand" aria-hidden />

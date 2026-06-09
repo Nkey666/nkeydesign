@@ -20,8 +20,7 @@ import type { Case, Category } from "@/lib/data/works";
 import { SeoMockup, AiMockup } from "./case-mockups";
 import { SeoTile, AiTile } from "./case-tiles";
 import { CASE_MOCKUPS } from "@/components/site/case-mockup";
-
-const EASE = [0.22, 1, 0.36, 1] as const;
+import { EASE_OUT } from "@/lib/motion";
 
 // Иконка под тип проекта — вместо «кикер-чёрточки» перед тегом.
 const TAG_ICON: Record<string, LucideIcon> = {
@@ -50,7 +49,7 @@ const modalContainer = {
 };
 const modalItem = {
   hidden: { opacity: 0, y: 14 },
-  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE } },
+  show: { opacity: 1, y: 0, transition: { duration: 0.45, ease: EASE_OUT } },
 };
 
 function Tile({ c, i, onOpen }: { c: Case; i: number; onOpen: () => void }) {
@@ -59,7 +58,7 @@ function Tile({ c, i, onOpen }: { c: Case; i: number; onOpen: () => void }) {
       initial={{ opacity: 0, y: 26 }}
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, amount: 0.3 }}
-      transition={{ duration: 0.55, delay: (i % 4) * 0.07, ease: EASE }}
+      transition={{ duration: 0.55, delay: (i % 4) * 0.07, ease: EASE_OUT }}
     >
       <button
         type="button"
@@ -142,7 +141,7 @@ export function CasesGrid({
                 initial={{ opacity: 0, y: 18 }}
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, amount: 0.6 }}
-                transition={{ duration: 0.5, ease: EASE }}
+                transition={{ duration: 0.5, ease: EASE_OUT }}
                 className="mb-9 text-center md:mb-12"
               >
                 <h3 className="font-display text-[1.65rem] font-semibold tracking-tight text-fg md:text-3xl">

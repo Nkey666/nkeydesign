@@ -10,6 +10,7 @@ import {
   useScroll,
   useMotionValueEvent,
 } from "motion/react";
+import { EASE_OUT } from "@/lib/motion";
 
 const NAV = [
   { label: "Услуги", href: "/#services" },
@@ -45,7 +46,7 @@ export function SiteHeader() {
               initial={{ opacity: 0, x: 12, scale: 0.96 }}
               animate={{ opacity: 1, x: 0, scale: 1 }}
               exit={{ opacity: 0, x: 12, scale: 0.96 }}
-              transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
+              transition={{ duration: 0.35, ease: EASE_OUT }}
             >
               {isHome ? (
                 <button

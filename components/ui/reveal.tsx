@@ -2,6 +2,7 @@
 
 import { motion, MotionConfig } from "motion/react";
 import type { ReactNode } from "react";
+import { EASE_OUT } from "@/lib/motion";
 
 // Мягкое появление при попадании в экран. Motion всегда включён (как весь сайт).
 export function Reveal({
@@ -24,7 +25,7 @@ export function Reveal({
         initial={{ opacity: 0, y }}
         whileInView={{ opacity: 1, y: 0 }}
         viewport={{ once: true, amount }}
-        transition={{ duration: 0.65, delay, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.65, delay, ease: EASE_OUT }}
       >
         {children}
       </motion.div>

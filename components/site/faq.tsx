@@ -5,8 +5,7 @@ import { motion, AnimatePresence, MotionConfig } from "motion/react";
 import { ChevronDown } from "lucide-react";
 import { faqs } from "@/lib/data/faq";
 import { cn } from "@/lib/utils";
-
-const EASE = [0.22, 1, 0.36, 1] as const;
+import { EASE_OUT } from "@/lib/motion";
 
 // Знак вопроса — живой «кивок»: бесконечный мягкий подскок + наклон, без рамки.
 function QuestionMark() {
@@ -104,7 +103,7 @@ export function Faq() {
                       initial={{ height: 0, opacity: 0 }}
                       animate={{ height: "auto", opacity: 1 }}
                       exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.42, ease: EASE }}
+                      transition={{ duration: 0.42, ease: EASE_OUT }}
                       className="overflow-hidden"
                     >
                       <p className="max-w-2xl pb-5 pr-9 text-[15px] leading-relaxed text-muted">

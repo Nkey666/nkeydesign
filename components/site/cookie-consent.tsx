@@ -5,9 +5,9 @@ import Link from "next/link";
 import { motion, AnimatePresence, MotionConfig } from "motion/react";
 import { Cookie } from "lucide-react";
 import { YandexMetrika } from "./yandex-metrika";
+import { EASE_OUT } from "@/lib/motion";
 
 const KEY = "cookie-consent-v1";
-const EASE = [0.22, 1, 0.36, 1] as const;
 
 type Choice = "accepted" | "declined";
 
@@ -48,7 +48,7 @@ export function CookieConsent() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 24 }}
-            transition={{ duration: 0.45, ease: EASE }}
+            transition={{ duration: 0.45, ease: EASE_OUT }}
             role="dialog"
             aria-label="Согласие на использование cookie"
             className="fixed bottom-4 left-4 z-50 w-[calc(100%-2rem)] max-w-sm rounded-2xl border border-border bg-bg/95 p-5 shadow-[0_24px_60px_-28px_oklch(0.3_0.03_260/0.6)] backdrop-blur-md sm:bottom-6 sm:left-6"

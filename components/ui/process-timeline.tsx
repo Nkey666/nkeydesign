@@ -11,9 +11,20 @@ import {
   useTransform,
 } from "motion/react";
 import type { Step } from "@/lib/data/services";
+import { EASE_IN_OUT, EASE_BACK } from "@/lib/motion";
 
 // Motion всегда включён (требование владельца — см. globals.css), поэтому
 // reducedMotion="never" и никакого useReducedMotion-гейтинга.
+
+// ── Настройки движения ──────────────────────────────────────────
+const SWEEP_DESKTOP = 2.4; // сек — один проезд луча по дуге
+const SWEEP_MOBILE = 2.1; // сек — один проезд луча по вертикальной рельсе
+const ARC_HEIGHT = 48; // px — на сколько дуга поднимается над линией точек
+const SVG_BOTTOM_PAD = 16; // px — запас снизу, чтобы свечение не обрезалось
+// Допуск, с которым точка считается «достигнутой»: чуть раньше, чем луч
+// дойдёт до её центра, иначе заполнение визуально отстаёт от луча.
+const REACH_EPSILON_DESKTOP = 0.02;
+const REACH_EPSILON_MOBILE = 0.001;
 
 const FILL_GRADIENT =
   "linear-gradient(180deg, oklch(0.62 0.16 256), oklch(0.7 0.15 240))";
@@ -21,6 +32,73 @@ const BEAM_BG =
   "radial-gradient(circle at 50% 38%, #f2f7ff, oklch(0.62 0.16 252) 68%)";
 const BEAM_SHADOW =
   "0 0 20px 5px oklch(0.6 0.17 252 / 0.55), 0 0 6px 1px oklch(0.7 0.15 245 / 0.9)";
+
+type Center = { x: number; y: number };
+
+/**
+ * Меряет центры точек-этапов относительно их контейнера и пересчитывает при
+ * ресайзе. Логика общая для десктопа и мобайла, поэтому держим её в одном хуке.
+ *
+ * Возвращает:
+ *  - wrapRef    — вешается на контейнер;
+ *  - registerDot(i) — ref-колбэк для i-й точки;
+ *  - width      — ширина контейнера (нужна десктопному SVG);
+ *  - centers    — центры точек как state (для отрисовки);
+ *  - centersRef — те же центры как ref (для useTransform, чтобы читать
+ *                 свежую геометрию внутри кадра без устаревших замыканий).
+ */
+function useDotCenters(count: number) {
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const dotRefs = useRef<(HTMLSpanElement | null)[]>([]);
+  const centersRef = useRef<Center[]>([]);
+  const [geometry, setGeometry] = useState<{ width: number; centers: Center[] }>({
+    width: 0,
+    centers: [],
+  });
+
+  useLayoutEffect(() => {
+    const measure = () => {
+      const wrap = wrapRef.current;
+      if (!wrap) return;
+      const box = wrap.getBoundingClientRect();
+      if (box.width === 0) return;
+      const centers = dotRefs.current.map((dot) => {
+        if (!dot) return { x: 0, y: 0 };
+        const r = dot.getBoundingClientRect();
+        return {
+          x: r.left - box.left + r.width / 2,
+          y: r.top - box.top + r.height / 2,
+        };
+      });
+      centersRef.current = centers;
+      setGeometry({ width: box.width, centers });
+    };
+
+    measure();
+    const observer = new ResizeObserver(measure);
+    if (wrapRef.current) observer.observe(wrapRef.current);
+    window.addEventListener("resize", measure);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener("resize", measure);
+    };
+  }, [count]);
+
+  const registerDot = (i: number) => (el: HTMLSpanElement | null) => {
+    dotRefs.current[i] = el;
+  };
+
+  return { wrapRef, registerDot, centersRef, width: geometry.width, centers: geometry.centers };
+}
+
+/** Сколько этапов «пройдено» при текущем прогрессе луча (0..1). */
+function countReached(progress: number, count: number, epsilon: number) {
+  let reached = 0;
+  for (let i = 0; i < count; i++) {
+    if (progress >= i / (count - 1) - epsilon) reached = i + 1;
+  }
+  return reached;
+}
 
 /** Точка этапа: ядро заполняется, при достижении — разовый пульс-кольцо. */
 function StepDot({
@@ -39,7 +117,7 @@ function StepDot({
         aria-hidden
         initial={false}
         animate={{ scale: filled ? 1 : 0, opacity: filled ? 1 : 0 }}
-        transition={{ duration: 0.4, ease: [0.34, 1.56, 0.64, 1] }}
+        transition={{ duration: 0.4, ease: EASE_BACK }}
         className="absolute inset-[2px] rounded-full bg-brand shadow-[0_0_12px_oklch(0.6_0.17_252/0.8)]"
       />
       {filled && (
@@ -57,67 +135,37 @@ function StepDot({
 
 /* ──────────────────────────  ДЕСКТОП  ────────────────────────── */
 function DesktopTimeline({ steps }: { steps: Step[] }) {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const nodeRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const [geo, setGeo] = useState<{ w: number; xs: number[]; cy: number }>({
-    w: 0,
-    xs: [],
-    cy: 0,
-  });
+  const { wrapRef, registerDot, width, centers } = useDotCenters(steps.length);
 
   const progress = useMotionValue(0);
   const offsetDistance = useTransform(progress, [0, 1], ["0%", "100%"]);
   const [reached, setReached] = useState(0);
   const inView = useInView(wrapRef, { once: true, amount: 0.5 });
 
-  useLayoutEffect(() => {
-    const measure = () => {
-      const wrap = wrapRef.current;
-      if (!wrap) return;
-      const wr = wrap.getBoundingClientRect();
-      if (wr.width === 0) return;
-      const xs = nodeRefs.current.map((n) =>
-        n ? n.getBoundingClientRect().left - wr.left + n.getBoundingClientRect().width / 2 : 0,
-      );
-      const ys = nodeRefs.current.map((n) =>
-        n ? n.getBoundingClientRect().top - wr.top + n.getBoundingClientRect().height / 2 : 0,
-      );
-      setGeo({ w: wr.width, xs, cy: ys[0] ?? 0 });
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    if (wrapRef.current) ro.observe(wrapRef.current);
-    window.addEventListener("resize", measure);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, [steps.length]);
-
   useMotionValueEvent(progress, "change", (v) => {
-    const n = steps.length;
-    let r = 0;
-    for (let i = 0; i < n; i++) if (v >= i / (n - 1) - 0.02) r = i + 1;
-    setReached(r);
+    setReached(countReached(v, steps.length, REACH_EPSILON_DESKTOP));
   });
 
-  const { w, xs, cy } = geo;
-  const ready = w > 0 && xs.length === steps.length && cy > 0;
-  const peak = Math.max(cy - 48, 6);
-  const svgH = cy + 16;
+  // Геометрия готова, когда контейнер измерен и все точки получили координаты.
+  const ready = width > 0 && centers.length === steps.length && (centers[0]?.y ?? 0) > 0;
+  const baselineY = centers[0]?.y ?? 0; // линия, на которой стоят точки
+  const peakY = Math.max(baselineY - ARC_HEIGHT, 6); // вершина дуги между точками
+  const svgHeight = baselineY + SVG_BOTTOM_PAD;
 
+  // Дуга: квадратичные кривые от точки к точке с подъёмом в peakY посередине.
   let arc = "";
   if (ready) {
-    arc = `M ${xs[0]} ${cy}`;
-    for (let i = 1; i < xs.length; i++) {
-      const mid = (xs[i - 1] + xs[i]) / 2;
-      arc += ` Q ${mid} ${peak} ${xs[i]} ${cy}`;
+    arc = `M ${centers[0].x} ${baselineY}`;
+    for (let i = 1; i < centers.length; i++) {
+      const midX = (centers[i - 1].x + centers[i].x) / 2;
+      arc += ` Q ${midX} ${peakY} ${centers[i].x} ${baselineY}`;
     }
   }
 
+  // Луч проезжает дугу один раз, когда секция появилась в экране.
   useEffect(() => {
     if (!inView || !ready) return;
-    const controls = animate(progress, 1, { duration: 2.4, ease: [0.45, 0, 0.15, 1] });
+    const controls = animate(progress, 1, { duration: SWEEP_DESKTOP, ease: EASE_IN_OUT });
     return () => controls.stop();
   }, [inView, ready, progress]);
 
@@ -132,8 +180,8 @@ function DesktopTimeline({ steps }: { steps: Step[] }) {
             <svg
               aria-hidden
               width="100%"
-              height={svgH}
-              viewBox={`0 0 ${w} ${svgH}`}
+              height={svgHeight}
+              viewBox={`0 0 ${width} ${svgHeight}`}
               preserveAspectRatio="none"
               className="pointer-events-none absolute left-0 top-0 overflow-visible"
             >
@@ -146,6 +194,7 @@ function DesktopTimeline({ steps }: { steps: Step[] }) {
                   <feGaussianBlur stdDeviation="2.4" />
                 </filter>
               </defs>
+              {/* Размытый след под чёткой линией — даёт свечение. */}
               <motion.path
                 d={arc}
                 fill="none"
@@ -164,6 +213,7 @@ function DesktopTimeline({ steps }: { steps: Step[] }) {
                 style={{ pathLength: progress }}
               />
             </svg>
+            {/* Светящаяся «голова» луча, едущая по той же дуге. */}
             <motion.div
               aria-hidden
               initial={{ opacity: 0 }}
@@ -187,12 +237,7 @@ function DesktopTimeline({ steps }: { steps: Step[] }) {
             const active = i === reached - 1;
             return (
               <li key={step.k} className="flex w-[15rem] shrink-0 flex-col items-center text-center">
-                <StepDot
-                  filled={filled}
-                  refCb={(el) => {
-                    nodeRefs.current[i] = el;
-                  }}
-                />
+                <StepDot filled={filled} refCb={registerDot(i)} />
                 <p
                   className="mt-4 font-display text-xl font-medium transition-colors duration-500"
                   style={{ color: active ? "var(--color-brand-strong)" : "var(--color-fg)" }}
@@ -213,60 +258,42 @@ function DesktopTimeline({ steps }: { steps: Step[] }) {
 
 /* ──────────────────────────  МОБАЙЛ  ────────────────────────── */
 function MobileTimeline({ steps }: { steps: Step[] }) {
-  const wrapRef = useRef<HTMLDivElement>(null);
-  const dotRefs = useRef<(HTMLSpanElement | null)[]>([]);
-  const geomRef = useRef({ x: 0, top: 0, h: 0 });
-  const [rail, setRail] = useState({ x: 0, top: 0, h: 0 });
+  const { wrapRef, registerDot, centersRef, centers } = useDotCenters(steps.length);
 
   // Разовый проезд вниз при попадании в экран — луч НЕ следует за скроллом.
   const progress = useMotionValue(0);
   const inView = useInView(wrapRef, { once: true, amount: 0.3 });
   const [reached, setReached] = useState(0);
 
-  useLayoutEffect(() => {
-    const measure = () => {
-      const wrap = wrapRef.current;
-      if (!wrap) return;
-      const wr = wrap.getBoundingClientRect();
-      if (wr.width === 0) return;
-      const cxs = dotRefs.current.map((n) =>
-        n ? n.getBoundingClientRect().left - wr.left + n.getBoundingClientRect().width / 2 : 0,
-      );
-      const cys = dotRefs.current.map((n) =>
-        n ? n.getBoundingClientRect().top - wr.top + n.getBoundingClientRect().height / 2 : 0,
-      );
-      const top = cys[0] ?? 0;
-      const h = (cys[cys.length - 1] ?? 0) - top;
-      geomRef.current = { x: cxs[0] ?? 0, top, h };
-      setRail({ x: cxs[0] ?? 0, top, h });
-    };
-    measure();
-    const ro = new ResizeObserver(measure);
-    if (wrapRef.current) ro.observe(wrapRef.current);
-    window.addEventListener("resize", measure);
-    return () => {
-      ro.disconnect();
-      window.removeEventListener("resize", measure);
-    };
-  }, [steps.length]);
+  // Вертикальная рельса: верх = центр первой точки, низ = центр последней.
+  const railX = centers[0]?.x ?? 0;
+  const railTop = centers[0]?.y ?? 0;
+  const railHeight = (centers[centers.length - 1]?.y ?? 0) - railTop;
+  const ready = railHeight > 0;
 
+  // Транзформы читают геометрию из centersRef, чтобы внутри кадра всегда была
+  // свежая высота рельсы (без устаревшего замыкания на старый рендер).
   const clamp = (v: number) => (v < 0 ? 0 : v > 1 ? 1 : v);
-  const fillH = useTransform(progress, (v) => geomRef.current.h * clamp(v));
-  const headTop = useTransform(progress, (v) => geomRef.current.top + geomRef.current.h * clamp(v));
-
-  useMotionValueEvent(progress, "change", (v) => {
-    const n = steps.length;
-    let r = 0;
-    for (let i = 0; i < n; i++) if (v >= i / (n - 1) - 0.001) r = i + 1;
-    setReached(r);
+  const railSpan = () => {
+    const c = centersRef.current;
+    if (c.length < 2) return { top: 0, height: 0 };
+    const top = c[0].y;
+    return { top, height: c[c.length - 1].y - top };
+  };
+  const fillH = useTransform(progress, (v) => railSpan().height * clamp(v));
+  const headTop = useTransform(progress, (v) => {
+    const { top, height } = railSpan();
+    return top + height * clamp(v);
   });
 
-  const ready = rail.h > 0;
+  useMotionValueEvent(progress, "change", (v) => {
+    setReached(countReached(v, steps.length, REACH_EPSILON_MOBILE));
+  });
 
   // Луч едет вниз один раз, когда секция появилась.
   useEffect(() => {
     if (!inView || !ready) return;
-    const controls = animate(progress, 1, { duration: 2.1, ease: [0.45, 0, 0.15, 1] });
+    const controls = animate(progress, 1, { duration: SWEEP_MOBILE, ease: EASE_IN_OUT });
     return () => controls.stop();
   }, [inView, ready, progress]);
 
@@ -277,7 +304,7 @@ function MobileTimeline({ steps }: { steps: Step[] }) {
         initial={{ opacity: 0 }}
         whileInView={{ opacity: 1 }}
         viewport={{ once: true, amount: 0.15 }}
-        transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        transition={{ duration: 0.6, ease: EASE_IN_OUT }}
         className="relative mx-auto max-w-md px-2 pt-6"
       >
         {/* фоновая рельса */}
@@ -285,15 +312,15 @@ function MobileTimeline({ steps }: { steps: Step[] }) {
           <div
             aria-hidden
             className="absolute w-[2px] rounded-full bg-border"
-            style={{ left: rail.x - 1, top: rail.top, height: rail.h }}
+            style={{ left: railX - 1, top: railTop, height: railHeight }}
           />
         )}
-        {/* заполнение по скроллу */}
+        {/* заполнение по ходу луча */}
         {ready && (
           <motion.div
             aria-hidden
             className="absolute w-[2px] rounded-full"
-            style={{ left: rail.x - 1, top: rail.top, height: fillH, background: FILL_GRADIENT }}
+            style={{ left: railX - 1, top: railTop, height: fillH, background: FILL_GRADIENT }}
           />
         )}
         {/* светящаяся голова луча */}
@@ -301,7 +328,7 @@ function MobileTimeline({ steps }: { steps: Step[] }) {
           <motion.div
             aria-hidden
             className="absolute size-3.5 -translate-x-1/2 -translate-y-1/2 rounded-full"
-            style={{ left: rail.x, top: headTop, background: BEAM_BG, boxShadow: BEAM_SHADOW }}
+            style={{ left: railX, top: headTop, background: BEAM_BG, boxShadow: BEAM_SHADOW }}
           />
         )}
 
@@ -312,12 +339,7 @@ function MobileTimeline({ steps }: { steps: Step[] }) {
             return (
               <li key={step.k} className="flex items-start gap-5">
                 <div className="flex flex-col items-center pt-1">
-                  <StepDot
-                    filled={filled}
-                    refCb={(el) => {
-                      dotRefs.current[i] = el;
-                    }}
-                  />
+                  <StepDot filled={filled} refCb={registerDot(i)} />
                 </div>
                 <div
                   className="flex-1 transition-transform duration-500"
