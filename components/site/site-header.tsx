@@ -10,7 +10,9 @@ import {
   useScroll,
   useMotionValueEvent,
 } from "motion/react";
+import { Calculator } from "lucide-react";
 import { EASE_OUT } from "@/lib/motion";
+import { smoothScrollTo } from "@/lib/scroll";
 
 const NAV = [
   { label: "Услуги", href: "/#services" },
@@ -49,13 +51,7 @@ export function SiteHeader() {
               transition={{ duration: 0.35, ease: EASE_OUT }}
             >
               {isHome ? (
-                <button
-                  type="button"
-                  onClick={() =>
-                    window.scrollTo({ top: 0, behavior: "smooth" })
-                  }
-                  className={pill}
-                >
+                <button type="button" onClick={() => smoothScrollTo(0)} className={pill}>
                   Главная
                 </button>
               ) : (
@@ -76,8 +72,17 @@ export function SiteHeader() {
             {item.label}
           </Link>
         ))}
-        <Link href="/privacy" className={pill}>
+        <Link href="/privacy" className={`hidden sm:inline-flex ${pill}`}>
           Документы
+        </Link>
+
+        {/* Узнать цену — акцентная пилюля, ведёт к калькулятору */}
+        <Link
+          href="/#price"
+          className="group inline-flex items-center gap-1.5 rounded-full bg-brand px-4 py-2 text-sm font-semibold text-white shadow-[0_8px_24px_-10px_oklch(0.48_0.16_256/0.6)] backdrop-blur-md transition-all duration-300 ease-smooth hover:-translate-y-0.5 hover:bg-brand-strong focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
+        >
+          <Calculator className="size-4 transition-transform duration-300 ease-smooth group-hover:-rotate-6" strokeWidth={2.2} />
+          Узнать цену
         </Link>
       </nav>
     </MotionConfig>
