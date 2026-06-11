@@ -2,6 +2,7 @@ import { Hero } from "@/components/site/hero";
 import { Manifesto } from "@/components/site/manifesto";
 import { Services } from "@/components/site/services";
 import { Works } from "@/components/site/works";
+import { PriceConfigurator } from "@/components/site/price-configurator";
 import { Faq } from "@/components/site/faq";
 import { AboutSpecialist } from "@/components/site/about-specialist";
 import { FinalCta } from "@/components/site/final-cta";
@@ -21,6 +22,7 @@ export default function Home() {
       <Manifesto />
       <Services />
       <Works />
+      <PriceConfigurator />
       <Faq />
       <AboutSpecialist />
       <FinalCta />

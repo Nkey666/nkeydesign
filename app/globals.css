@@ -134,6 +134,108 @@
   animation: badge-glow 2.8s ease-in-out infinite;
 }
 
+/* Короткий «пульс» итоговой суммы в калькуляторе при смене значения. */
+@keyframes price-pop {
+  from {
+    transform: scale(0.96);
+    opacity: 0.45;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+.animate-price-pop {
+  animation: price-pop 0.4s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Плавная смена картинки сайта на «сцене» конфигуратора. */
+@keyframes stage-fade {
+  from {
+    opacity: 0;
+    transform: scale(1.04);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+.animate-stage-fade {
+  animation: stage-fade 0.55s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* «Выезд» сайта на сцену при первом выборе типа (момент-герой). */
+@keyframes stage-arrive {
+  from {
+    opacity: 0;
+    transform: translateY(32px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-stage-arrive {
+  animation: stage-arrive 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Направленная смена сайта при листании типов стрелками. */
+@keyframes stage-in-left {
+  from {
+    opacity: 0;
+    transform: translateX(-36px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes stage-in-right {
+  from {
+    opacity: 0;
+    transform: translateX(36px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-stage-in-left {
+  animation: stage-in-left 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.animate-stage-in-right {
+  animation: stage-in-right 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/* Лёгкое парение плашек ТОП-1 и курсора пустой сцены. */
+@keyframes float-y {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+.animate-float-y {
+  animation: float-y 3.8s ease-in-out infinite;
+}
+
+/* Появление чипов конфигурации в нижней панели (stagger через delay). */
+@keyframes chip-in {
+  from {
+    opacity: 0;
+    transform: translateY(6px) scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+.animate-chip-in {
+  animation: chip-in 0.35s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
 .animate-marquee-reverse {
   animation: marquee-x 52s linear infinite reverse;
 }
@@ -166,3 +268,126 @@
   so the experience is identical for everyone — including this owner who tests
   with Reduced Motion enabled.
 */
+
+/* ============================================================
+   Конфигуратор: тематические микроанимации значков.
+   Два триггера через :is(.cfg-play, .group:hover): авто-карусель (таймер
+   в PriceConfigurator по очереди вешает .cfg-play на активный глиф) и
+   наведение на карточку. transform-box: fill-box — чтобы transform-origin
+   считался от самого элемента, а не от холста SVG.
+   ============================================================ */
+[class^="cfg-"],
+[class*=" cfg-"] {
+  transform-box: fill-box;
+}
+
+/* SEO — лупа приближает, столбики подрастают по очереди */
+@keyframes cfg-seo-zoom {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.13); }
+}
+@keyframes cfg-seo-grow {
+  0% { transform: scaleY(0.2); }
+  60% { transform: scaleY(1.12); }
+  100% { transform: scaleY(1); }
+}
+.cfg-seo-lens { transform-origin: 10.4px 10.4px; }
+.cfg-seo-bar { transform-origin: bottom; }
+:is(.cfg-play, .group:hover) .cfg-seo-lens { animation: cfg-seo-zoom 1.6s var(--ease-smooth) infinite; }
+:is(.cfg-play, .group:hover) .cfg-seo-bar-1 { animation: cfg-seo-grow 0.7s var(--ease-smooth); }
+:is(.cfg-play, .group:hover) .cfg-seo-bar-2 { animation: cfg-seo-grow 0.7s var(--ease-smooth) 0.1s; }
+:is(.cfg-play, .group:hover) .cfg-seo-bar-3 { animation: cfg-seo-grow 0.7s var(--ease-smooth) 0.2s; }
+
+/* Интеграции — связи прочерчиваются, узлы пульсируют */
+@keyframes cfg-int-pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+.cfg-int-node { transform-origin: center; }
+.cfg-int-link {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 1;
+  transition: stroke-dashoffset 0.5s var(--ease-smooth);
+}
+:is(.cfg-play, .group:hover) .cfg-int-link-1 { stroke-dashoffset: 0; }
+:is(.cfg-play, .group:hover) .cfg-int-link-2 { stroke-dashoffset: 0; transition-delay: 0.12s; }
+:is(.cfg-play, .group:hover) .cfg-int-link-3 { stroke-dashoffset: 0; transition-delay: 0.24s; }
+:is(.cfg-play, .group:hover) .cfg-int-node-1 { animation: cfg-int-pulse 1.3s var(--ease-smooth) infinite; }
+:is(.cfg-play, .group:hover) .cfg-int-node-2 { animation: cfg-int-pulse 1.3s var(--ease-smooth) 0.16s infinite; }
+:is(.cfg-play, .group:hover) .cfg-int-node-3 { animation: cfg-int-pulse 1.3s var(--ease-smooth) 0.32s infinite; }
+
+/* CMS — карандаш «пишет», строка набирается слева направо */
+@keyframes cfg-cms-write {
+  0% { transform: translate(0, 0) rotate(0deg); }
+  25% { transform: translate(-1px, 0.5px) rotate(-7deg); }
+  50% { transform: translate(0.4px, -0.3px) rotate(2deg); }
+  75% { transform: translate(-0.6px, 0.4px) rotate(-4deg); }
+  100% { transform: translate(0, 0) rotate(0deg); }
+}
+@keyframes cfg-cms-fill {
+  0% { transform: scaleX(0); }
+  100% { transform: scaleX(1); }
+}
+.cfg-cms-pencil { transform-origin: 50% 100%; }
+.cfg-cms-line { transform-origin: left; }
+:is(.cfg-play, .group:hover) .cfg-cms-pencil { animation: cfg-cms-write 0.85s var(--ease-smooth) infinite; }
+:is(.cfg-play, .group:hover) .cfg-cms-line { animation: cfg-cms-fill 0.85s var(--ease-smooth) infinite; }
+
+/* Лендинг — кнопка «дышит», подзаголовок набирается слева направо */
+@keyframes cfg-pop {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.08); }
+}
+@keyframes cfg-wipe {
+  0% { transform: scaleX(0.12); }
+  100% { transform: scaleX(1); }
+}
+.cfg-land-cta { transform-origin: center; }
+.cfg-land-line { transform-origin: left; }
+:is(.cfg-play, .group:hover) .cfg-land-cta { animation: cfg-pop 1s var(--ease-smooth) infinite; }
+:is(.cfg-play, .group:hover) .cfg-land-line { animation: cfg-wipe 0.9s var(--ease-smooth) infinite; }
+
+/* Корпоративный — задняя страница выезжает из стопки, строки набегают */
+@keyframes cfg-corp-fan {
+  0% { transform: translate(-3.4px, 3px); opacity: 0; }
+  100% { transform: translate(0, 0); }
+}
+@keyframes cfg-corp-slide {
+  0% { transform: translateX(-2.5px); opacity: 0.1; }
+  100% { transform: translateX(0); }
+}
+.cfg-corp-back { transform-origin: center; }
+.cfg-corp-line { transform-origin: left; }
+:is(.cfg-play, .group:hover) .cfg-corp-back { animation: cfg-corp-fan 0.6s var(--ease-smooth); }
+:is(.cfg-play, .group:hover) .cfg-corp-line-1 { animation: cfg-corp-slide 0.5s var(--ease-smooth) 0.12s; }
+:is(.cfg-play, .group:hover) .cfg-corp-line-2 { animation: cfg-corp-slide 0.5s var(--ease-smooth) 0.22s; }
+:is(.cfg-play, .group:hover) .cfg-corp-line-3 { animation: cfg-corp-slide 0.5s var(--ease-smooth) 0.32s; }
+
+/* Магазин — товар падает в пакет, ручка пружинит */
+@keyframes cfg-store-drop {
+  0% { transform: translateY(-7px); opacity: 0; }
+  55% { transform: translateY(0.6px); opacity: 1; }
+  100% { transform: translateY(0); }
+}
+@keyframes cfg-store-squash {
+  0%, 100% { transform: scaleY(1); }
+  55% { transform: scaleY(0.85); }
+}
+.cfg-store-item { transform-origin: center; }
+.cfg-store-handle { transform-origin: top; }
+:is(.cfg-play, .group:hover) .cfg-store-item { animation: cfg-store-drop 1s var(--ease-smooth) infinite; }
+:is(.cfg-play, .group:hover) .cfg-store-handle { animation: cfg-store-squash 1s var(--ease-smooth) infinite; }
+
+/* Редизайн + SEO — тренд ранжирования прочерчивается, сверкание мигает */
+@keyframes cfg-redo-draw {
+  from { stroke-dashoffset: 1; }
+  to { stroke-dashoffset: 0; }
+}
+@keyframes cfg-redo-spark {
+  0%, 100% { transform: scale(0.4) rotate(-25deg); opacity: 0.25; }
+  50% { transform: scale(1) rotate(0deg); opacity: 1; }
+}
+.cfg-redo-trend { stroke-dasharray: 1; }
+.cfg-redo-spark { transform-origin: center; }
+:is(.cfg-play, .group:hover) .cfg-redo-trend { animation: cfg-redo-draw 0.7s var(--ease-smooth); }
+:is(.cfg-play, .group:hover) .cfg-redo-spark { animation: cfg-redo-spark 1.5s var(--ease-smooth) infinite; }
