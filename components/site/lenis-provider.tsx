@@ -39,12 +39,16 @@ export function LenisProvider({ children }: { children: React.ReactNode }) {
       // только ссылки на текущую страницу ("#x" или "/#x" на главной)
       if (path && path !== "/" && path !== window.location.pathname) return;
       if (path === "/" && window.location.pathname !== "/") return;
-      const target = document.querySelector(href.slice(hashAt));
+      const hash = href.slice(hashAt);
+      const target = document.querySelector(hash);
       if (!target) return;
       e.preventDefault();
       e.stopPropagation();
       history.pushState(null, "", href);
-      const top = window.scrollY + target.getBoundingClientRect().top - 24;
+      // У конфигуратора большой верхний паддинг секции, поэтому к нему
+      // прокручиваем чуть глубже — заголовок ближе к верху, видна карточка.
+      const offset = hash === "#price" ? -64 : 24;
+      const top = window.scrollY + target.getBoundingClientRect().top - offset;
       lenis.scrollTo(top, { duration: 1.1 });
     };
     // capture: перехватываем раньше Next.js Link, иначе он preventDefault'ит

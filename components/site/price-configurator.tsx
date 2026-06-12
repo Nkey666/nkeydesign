@@ -11,6 +11,7 @@ import { projectTypes, priceOptions } from "@/lib/data/pricing";
 import { TYPE_MOCKUP } from "./config-mockups";
 import { usePriceConfig, ruble } from "./use-price-config";
 import { EASE_OUT } from "@/lib/motion";
+import { smoothScrollTo } from "@/lib/scroll";
 import { cn } from "@/lib/utils";
 
 const DIGITS = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
@@ -89,6 +90,14 @@ export function PriceConfigurator() {
   // Кнопки окна: «свернуть» и «закрыть» снимают выбор типа (сцена пустеет),
   // «развернуть» открывает превью на весь экран.
   const closePreview = () => type && selectType(type.id);
+
+  // Стрелка/текст в пустом превью плавно листают ВНИЗ к списку выбора типа,
+  // так чтобы блок встал примерно на 18% от верха экрана (видно и список,
+  // и сверху ещё чуть превью).
+  const scrollToTypes = () => {
+    const el = document.getElementById("config-types");
+    if (el) smoothScrollTo(el, { offset: -Math.round(window.innerHeight * 0.18), duration: 1.0 });
+  };
 
   // Полноэкранное превью: пока открыто — блокируем скролл страницы и слушаем Esc.
   // Зависим и от type: если превью закрыли, скролл разблокируется сам.
@@ -334,20 +343,22 @@ export function PriceConfigurator() {
                   </>
                 ) : (
                   <div className="absolute inset-0 flex flex-col items-center justify-center gap-2.5 rounded-2xl border-2 border-dashed border-border bg-bg/40">
-                    <a
-                      href="#price"
-                      aria-label="К конфигуратору"
+                    <button
+                      type="button"
+                      onClick={scrollToTypes}
+                      aria-label="Перейти к выбору типа проекта"
                       className="animate-float-y inline-flex size-11 items-center justify-center rounded-full border border-border bg-bg text-brand shadow-[0_8px_20px_-10px_oklch(0.48_0.16_256/0.5)] transition-[transform,border-color,color] duration-300 ease-smooth hover:scale-110 hover:border-brand/40 hover:text-brand-strong active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand focus-visible:ring-offset-2"
                     >
                       <ArrowDown className="size-5" strokeWidth={2} />
-                    </a>
+                    </button>
                     <p className="px-6 text-center text-[14.5px] font-semibold text-fg">Здесь появится ваш сайт</p>
-                    <a
-                      href="#price"
+                    <button
+                      type="button"
+                      onClick={scrollToTypes}
                       className="-mt-1 max-w-xs px-6 text-center text-[13px] leading-relaxed text-muted underline-offset-4 transition-colors duration-200 hover:text-fg hover:underline"
                     >
                       Выберите тип проекта в списке ниже.
-                    </a>
+                    </button>
                   </div>
                 )}
 
@@ -382,7 +393,7 @@ export function PriceConfigurator() {
             </div>
 
             {/* Тип проекта */}
-            <div className="mx-auto max-w-3xl px-5 pt-8 sm:px-9">
+            <div id="config-types" className="mx-auto max-w-3xl scroll-mt-24 px-5 pt-8 sm:px-9">
               <div className="flex items-baseline gap-2.5">
                 <span className="font-display text-[15px] font-bold text-fg">Тип проекта</span>
                 <span className="text-[12.5px] text-muted">один на выбор</span>
