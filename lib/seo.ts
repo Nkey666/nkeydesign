@@ -46,7 +46,7 @@ export const KNOWS_ABOUT = [
 ];
 
 /** Вилка по проектам — для priceRange. */
-export const PRICE_RANGE = "40000–90000 ₽";
+export const PRICE_RANGE = "20000–45000 ₽";
 
 const personId = `${SITE_URL}/#person`;
 const orgId = `${SITE_URL}/#business`;
